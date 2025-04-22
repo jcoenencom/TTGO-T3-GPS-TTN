@@ -22,3 +22,4 @@ When GPS receiver is locked, the IP address, Latitude, longitude and altitude (i
 
 The Red LED on the GPS module will flash every second indicating a GPS lock.
 
+![IMG_0052](https://github.com/user-attachments/assets/3fafc615-6aaa-4b0d-9928-172f462ac6f8)
