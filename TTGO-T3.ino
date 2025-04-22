@@ -7,7 +7,7 @@
 #include "ESPTelnet.h"
 #include <Wire.h>
 #include <Adafruit_SSD1306.h>
-#include <Adafruit_GFX.h>
+//#include <Adafruit_GFX.h>
 
 TinyGPSPlus gps;
 
@@ -108,6 +108,8 @@ void onTelnetInput(String str) {
   } else if (str == "bye") {
     telnet.println("> disconnecting you...");
     telnet.disconnectClient();
+  } else if (str == "raz") {
+    errorMsg("rebooting");
   } else {
     telnet.println(str);
   }
@@ -243,18 +245,32 @@ void loop() {
       display.clearDisplay();
       display.setCursor(0,0);
       display.println(ip);
-      display.println(gps.location.lat(), 6);
+      display.print(String(gps.date.day())+"/"+String(gps.date.month())+"/"+String(gps.date.year()));
+      display.print(" - ");
+      display.println(String(gps.time.hour())+":"+String(gps.time.minute())+":"+String(gps.time.second()));
+      display.print(gps.location.lat(), 6);
+      display.print("  ");
       display.println(gps.location.lng(), 6);
-      display.println(gps.altitude.value()); 
+      display.print(gps.altitude.meters());
+      display.print(" (m) ");
+      display.print(gps.satellites.value());
+      display.println(" sats");
       display.display(); 
       //display.println(gpsData);
       //toggleLED();
-      if (gps.location.isValid()) {
-          Serial.print(gps.location.lat(), 6);
-          Serial.print(F(","));
-          Serial.print(gps.location.lng(), 6);
-        }
-      telnet.print(gdata);
+        telnet.print(String(gps.date.day())+"/"+String(gps.date.month())+"/"+String(gps.date.year()));
+        telnet.print(" - ");
+        telnet.print(String(gps.time.hour())+":"+String(gps.time.minute())+":"+String(gps.time.second()));
+        telnet.print(" : ");
+        telnet.print(gps.location.lat(), 6);
+        telnet.print(" , ");
+        telnet.print(gps.location.lng(), 6);
+        telnet.print(" , ");
+        telnet.print(gps.altitude.meters());
+        telnet.print(" (mtr) , ");
+        telnet.print(gps.satellites.value());
+        telnet.println(" Sat");
+
       gdata="";    
     }
     
