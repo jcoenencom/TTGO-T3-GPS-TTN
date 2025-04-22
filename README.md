@@ -10,3 +10,15 @@ In order to implement this code, the following libraries need to be installed in
 - WiFi
 - WebServer
 - Adafruit_SSD1306
+
+
+At the start of the module, the display will show the Adafruit logo, followed by text 
+Hello
+LILYGO T3 LoRa
+
+Eventually when the WiFi is connected the IP address and the OTA directory
+
+When GPS receiver is locked, the IP address, Latitude, longitude and altitude (in cm) will be displayed
+
+The Red LED on the GPS module will flash every second indicating a GPS lock.
+
