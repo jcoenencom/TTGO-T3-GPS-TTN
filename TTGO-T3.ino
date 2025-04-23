@@ -1,5 +1,4 @@
 #include <TinyGPS++.h>
-#include <SoftwareSerial.h>
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <WebServer.h>
@@ -30,6 +29,9 @@ Adafruit_SSD1306 display(OLED_RESET);
 #define TXD2 4
 #define GPS_BAUD 9600
 HardwareSerial ss(2);
+double olat;
+double olng;
+int oalt;
 
 char IPaddress[26];  // variable to store IP address of WiFi conneexion
 
@@ -242,35 +244,39 @@ void loop() {
     char gpsData = ss.read();
     gdata += String(gpsData);
     if (gps.encode(gpsData)) {
-      display.clearDisplay();
-      display.setCursor(0,0);
-      display.println(ip);
-      display.print(String(gps.date.day())+"/"+String(gps.date.month())+"/"+String(gps.date.year()));
-      display.print(" - ");
-      display.println(String(gps.time.hour())+":"+String(gps.time.minute())+":"+String(gps.time.second()));
-      display.print(gps.location.lat(), 6);
-      display.print("  ");
-      display.println(gps.location.lng(), 6);
-      display.print(gps.altitude.meters());
-      display.print(" (m) ");
-      display.print(gps.satellites.value());
-      display.println(" sats");
-      display.display(); 
-      //display.println(gpsData);
-      //toggleLED();
-        telnet.print(String(gps.date.day())+"/"+String(gps.date.month())+"/"+String(gps.date.year()));
-        telnet.print(" - ");
-        telnet.print(String(gps.time.hour())+":"+String(gps.time.minute())+":"+String(gps.time.second()));
-        telnet.print(" : ");
-        telnet.print(gps.location.lat(), 6);
-        telnet.print(" , ");
-        telnet.print(gps.location.lng(), 6);
-        telnet.print(" , ");
-        telnet.print(gps.altitude.meters());
-        telnet.print(" (mtr) , ");
-        telnet.print(gps.satellites.value());
-        telnet.println(" Sat");
-
+      if ( (abs(gps.location.lat() - olat) > 0.0001) or ((abs(gps.location.lng() - olng) > 0.0001)) or (abs(gps.altitude.value() - oalt) > 1)) {
+        display.clearDisplay();
+        display.setCursor(0,0);
+        display.println(ip);
+        display.print(String(gps.date.day())+"/"+String(gps.date.month())+"/"+String(gps.date.year()));
+        display.print(" - ");
+        display.println(String(gps.time.hour())+":"+String(gps.time.minute())+":"+String(gps.time.second()));
+        display.print(gps.location.lat(), 6);
+        display.print("  ");
+        display.println(gps.location.lng(), 6);
+        display.print(gps.altitude.meters());
+        display.print(" (m) ");
+        display.print(gps.satellites.value());
+        display.println(" sats");
+        display.display(); 
+        //display.println(gpsData);
+        //toggleLED();
+          telnet.print(String(gps.date.day())+"/"+String(gps.date.month())+"/"+String(gps.date.year()));
+          telnet.print(" - ");
+          telnet.print(String(gps.time.hour())+":"+String(gps.time.minute())+":"+String(gps.time.second()));
+          telnet.print(" : ");
+          telnet.print(gps.location.lat(), 6);
+          telnet.print(" , ");
+          telnet.print(gps.location.lng(), 6);
+          telnet.print(" , ");
+          telnet.print(gps.altitude.meters());
+          telnet.print(" (mtr) , ");
+          telnet.print(gps.satellites.value());
+          telnet.println(" Sat");
+          olat=gps.location.lat();
+          olng=gps.location.lng();
+          oalt=gps.altitude.value();
+      }
       gdata="";    
     }
     
